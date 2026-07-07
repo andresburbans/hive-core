@@ -6,7 +6,11 @@
   },
   "description": "HIVE (Hyper-local Intelligent Vicinity Engine): a geography-first retrieval and ranking model for matching situated needs to situated capabilities on discrete hexagonal grids, with first-class uncertainty.",
   "license": "MIT",
-  "author": "Andres Burbano (andresburbans)",
+  "author": "Andres Felipe Burbano Suarez (andresburbans)",
+  "contributors": [
+    "Liliana Marisol Quenan Ortiz",
+    "Diego Fernando Hernandez Giraldo"
+  ],
   "type": "module",
   "sideEffects": false,
   "engines": {

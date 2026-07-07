@@ -1,0 +1,23 @@
+{
+  "title": "hive-core: A geography-first retrieval engine on discrete hexagonal grids",
+  "description": "Geography-first retrieval and ranking engine for matching situated needs to situated capabilities on discrete hexagonal grids (H3), with first-class uncertainty. The open core of the HIVE model.",
+  "license": "MIT",
+  "upload_type": "software",
+  "creators": [
+    { "name": "Burbano Suárez, Andrés Felipe" },
+    { "name": "Quenán Ortiz, Liliana Marisol" },
+    { "name": "Hernandez Giraldo, Diego Fernando" }
+  ],
+  "contributors": [
+    { "name": "Preciado Vargas, Mónica", "type": "Supervisor" },
+    { "name": "Arango Cabarcas, Jaime Alfonso", "type": "Supervisor" }
+  ],
+  "keywords": [
+    "geospatial retrieval",
+    "spatial matching",
+    "H3",
+    "discrete global grid systems",
+    "location privacy",
+    "Bayesian reputation"
+  ]
+}

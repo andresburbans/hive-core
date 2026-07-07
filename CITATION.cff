@@ -3,8 +3,12 @@ message: "If you use this software, please cite it as below."
 title: "hive-core: A geography-first retrieval engine on discrete hexagonal grids"
 type: software
 authors:
-  - family-names: "Burbano"
-    given-names: "Andres"
+  - family-names: "Burbano Suárez"
+    given-names: "Andrés Felipe"
+  - family-names: "Quenán Ortiz"
+    given-names: "Liliana Marisol"
+  - family-names: "Hernandez Giraldo"
+    given-names: "Diego Fernando"
 version: 0.1.0
 date-released: 2026-07-07
 license: MIT

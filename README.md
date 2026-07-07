@@ -96,8 +96,12 @@ hive-core is the engine formalized in the research *A geography-first retrieval 
 
 ## AI-assisted development disclosure
 
-Portions of this codebase were developed with the assistance of Claude (Fable 5, Anthropic) used as a coding assistant under the direction, review and verification of the human author. The model design, formalization, and validation decisions are the author's. Commits produced with assistance carry a `Co-Authored-By: Claude Fable 5` trailer. In line with current authorship guidance (COPE and publisher policies), AI tools are not credited as authors; their use is disclosed here and in any derived publication.
+Portions of this codebase were developed with the assistance of Claude (Fable 5, Anthropic) used as a coding assistant under the direction, review and verification of the human authors. The model design, formalization, and validation decisions are the authors'. Commits produced with assistance carry a `Co-Authored-By: Claude Fable 5` trailer. In line with current authorship guidance (COPE and publisher policies), AI tools are not credited as authors; their use is disclosed here and in any derived publication.
+
+## Acknowledgements
+
+Developed as part of the authors' thesis research, directed by Mónica Preciado Vargas (Dra. Ing.) and co-directed by Jaime Alfonso Arango Cabarcas (Dr. rer. nat.).
 
 ## License
 
-MIT © 2026 Andrés Burbano
+MIT © 2026 Andrés Felipe Burbano Suárez, Liliana Marisol Quenán Ortiz, Diego Fernando Hernandez Giraldo
