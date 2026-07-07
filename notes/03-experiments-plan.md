@@ -36,3 +36,13 @@ Perturbar cada w_i ±50 % y medir estabilidad del primer resultado y ρ de rango
 ## Paridad librería ↔ pipeline
 
 Antes de correr E7–E9: verificar que `hive-core` (TS) y `python_resultados/` (Py) producen los mismos números sobre un caso de contraste fijo (misma semilla, mismos candidatos → mismo orden y mismos scores a tolerancia 1e-9). Si el pipeline Python reimplementa, la paridad es el argumento de que "lo medido es el modelo real".
+
+## 2026-07-07 — E7 y E9 EJECUTADOS (single-seed, contra la librería publicada)
+
+Scripts en `article/experiments/` (population.ts + e7_gate_ablation.ts + e9_weight_sensitivity.ts), deterministas (mulberry32, reloj congelado NOW_MS), corren con `npx tsx` sin infraestructura. 600 candidatos, 200 consultas, Cali.
+
+**E7 (compuerta):** sin G (discovery + cobertura ilimitada = el camino sin compuerta de la propia librería): 3.29/10 infactibles en el top-10, primero infactible 4.5 %, NDCG@10 = 0.85 vs modelo completo. Distancia pura: primero infactible 74 %, NDCG@10 = 0.19. Lectura: las señales degradan lo infactible pero no lo expulsan — un tercio de las posiciones visibles queda ocupado por no-respuestas.
+
+**E9 (sensibilidad ±50 %):** solo la distancia es sensible (×0.5 → 27.5 % de cambios de primer resultado, ρ 0.61); todas las alfanuméricas ≤ 10.5 % con ρ ≥ 0.85. Lectura: las conclusiones dependen de que la geografía domine (por diseño), no de las magnitudes exactas de los pesos menores.
+
+Pendiente: extender ambos a multi-semilla al correr E8; publicar `experiments/` junto con el paper (hoy viven bajo article/, git-ignorado).
