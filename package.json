@@ -1,0 +1,50 @@
+{
+  "name": "hive-core",
+  "version": "0.1.0",
+  "description": "HIVE (Hyper-local Intelligent Vicinity Engine): a geography-first retrieval and ranking model for matching situated needs to situated capabilities on discrete hexagonal grids, with first-class uncertainty.",
+  "license": "MIT",
+  "author": "Andrés Burbano (andresburbans)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "geospatial",
+    "retrieval",
+    "ranking",
+    "h3",
+    "hexagonal-grid",
+    "spatial-matching",
+    "bayesian",
+    "dirichlet",
+    "location-privacy",
+    "gis"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andresburbans/hive-core.git"
+  },
+  "dependencies": {
+    "h3-js": "^4.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
