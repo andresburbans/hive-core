@@ -43,7 +43,7 @@ Añadidos en la misma pasada: `.github/workflows/ci.yml` (Node 20/22: typecheck+
 
 ## Pendientes que decide el usuario
 
-- [ ] Nombre legal para LICENSE y autoría del artículo.
+- [x] Nombre legal resuelto (2026-07-07): Andrés Felipe Burbano Suárez; coautores del software: Liliana Marisol Quenán Ortiz, Diego Fernando Hernandez Giraldo; dirección de tesis (Supervisors en .zenodo.json): Mónica Preciado Vargas (Dra. Ing.), Jaime Alfonso Arango Cabarcas (Dr. rer. nat.). Autoría del ARTÍCULO sigue abierta.
 - [ ] Coautoría de la directora de tesis (recomendado sí).
 - [ ] Revista objetivo primer intento (recomendado: ISPRS IJGI).
 - [x] Crear repo GitHub público `andresburbans/hive-core` y publicar. (hecho 2026-07-07; npm publish pendiente de login)
