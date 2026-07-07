@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { scoreCandidate, scoreOpportunity, scoreOffer } from "../src/scoring";
+import { scoreCandidate, scoreOpportunity, scoreOffer, explorationScore } from "../src/scoring";
+import { explorationRng } from "../src/random";
 import { GLOBAL_FALLBACK_ALPHA, WEIGHTS } from "../src/config";
 import { buildTextDoc, buildTextQuery, computeLocalIdf } from "../src/text";
 import type { SituatedQuery, SituatedCandidate, OpenNeed, ProviderContext } from "../src/contracts";
@@ -142,6 +143,36 @@ describe("multi-signal ranking correctness (seeded dominant candidate)", () => {
         const b = scoreCandidate(c, q, ALPHA);
         expect(b).toEqual(a);
         expect(a.modelVersion).toBeTruthy();
+    });
+
+    it("P4: a candidate with zero evidence is scorable from design priors alone", () => {
+        // No ratings, no bands, no activity, no text: the full cold-start
+        // rollback. The model must still produce a finite, gate-passing score
+        // whose reputation term is exactly the prior mean E[R] = 24/7.
+        const bare = makeCandidate({
+            ratingCounts: [0, 0, 0, 0, 0],
+            pricing: {},
+            lastActiveMs: undefined,
+            createdMs: undefined,
+            engagement: undefined,
+            traitCounts: undefined,
+            textDoc: undefined,
+        });
+        const r = scoreCandidate(bare, makeQuery({ nowMs: 1700000000000 }), ALPHA);
+        expect(r.passedGate).toBe(true);
+        expect(Number.isFinite(r.score)).toBe(true);
+        expect(r.expectedRating).toBeCloseTo(24 / 7, 10); // Dir(1,1,1,2,2) prior mean
+        for (const x of r.featureVector) expect(Number.isFinite(x)).toBe(true);
+    });
+
+    it("exploration is reproducible when the RNG derives from the frozen clock", () => {
+        const q = makeQuery({ nowMs: 1700000000000 });
+        const c = makeCandidate();
+        const base = scoreCandidate(c, q, ALPHA);
+        const s1 = explorationScore(base, c, ALPHA, "browse", 0.3, explorationRng(c.id, q.nowMs));
+        const s2 = explorationScore(base, c, ALPHA, "browse", 0.3, explorationRng(c.id, q.nowMs));
+        expect(s2).toBe(s1);
+        expect(Number.isFinite(s1)).toBe(true);
     });
 
     it("emits the 14-component LTR feature vector for every scored candidate", () => {

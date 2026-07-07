@@ -189,6 +189,10 @@ export function scoreCandidate(
  * the fraction λ of its reputation term with a SAMPLE from the posterior. The
  * caller applies it only below the protected top, with an RNG seeded by
  * (day, candidate) so the ranking does not "dance" between renders.
+ *
+ * Reproducibility: build the RNG with `explorationRng(c.id, q.nowMs)` — the
+ * day must derive from the frozen evaluation clock, not from `Date.now()`,
+ * or the exploratory phase of an experiment cannot be replayed.
  */
 export function explorationScore(
     base: ScoreResult,

@@ -29,7 +29,7 @@ Or from source:
 git clone https://github.com/andresburbans/hive-core.git
 cd hive-core
 npm install
-npm test        # 58 property tests
+npm test        # 60 property tests
 npm run build   # emit dist/
 ```
 
@@ -86,13 +86,17 @@ The same mathematics ranks in every direction of a matching market:
 3. **Cost bounded by local density** — candidates examined ≤ active offers in `3k²+3k+1` cells, independent of catalog size.
 4. **Honest degradation** — with zero evidence the model runs on design values (kernel α=2.5 km, β=2; marketplace J-curve prior) and improves monotonically with data; new candidates present as *new*, never as fake averages.
 5. **Structural privacy** — the model never touches raw coordinates: cells in, cells out.
-6. **Determinism on demand** — freezing the evaluation clock (`SituatedQuery.nowMs`) makes scoring a pure function of its inputs; every result carries the `modelVersion` that produced it.
+6. **Determinism on demand** — freezing the evaluation clock (`SituatedQuery.nowMs`) makes scoring a pure function of its inputs; every result carries the `modelVersion` that produced it. The same guarantee extends to Thompson exploration: build the RNG with `explorationRng(candidateId, nowMs)` from the frozen clock and the exploratory ranking replays bit-for-bit.
 
 > **Precondition of the native hexagonal metric:** cells must be persisted at the search resolution (default H3 res 8) **or finer**. Coarser cells cannot be refined and the metric falls back to centroid Haversine.
 
 ## Origin and evidence
 
-hive-core is the engine formalized in the research *A geography-first retrieval model for presential service markets* (article in preparation) and validated in a deployed marketplace PWA. The library comprises 14 pure modules plus a barrel export. Validation includes this repo's 58-test property suite (decay monotonicity and bounds, posterior convergence, level/risk separation, kernel parameter recovery from synthetic acceptance data, price-fit continuity, gate behavior, coverage non-manipulability, score decomposability, frozen-clock determinism, retrieval containment) and six controlled experiments on a synthetic replica of Cali, Colombia — ranking correctness, divergence from distance-only baselines, cold start, density modulation, catalog-size invariance, multi-seed robustness and signal ablation — whose reproducible pipeline lives in the companion research repository.
+hive-core is the engine formalized in the research *A geography-first retrieval model for presential service markets* (article in preparation) and validated in a deployed marketplace PWA. The library comprises 14 pure modules plus a barrel export. Validation includes this repo's 60-test property suite (decay monotonicity and bounds, posterior convergence, level/risk separation, kernel parameter recovery from synthetic acceptance data, price-fit continuity, gate behavior, coverage non-manipulability, score decomposability, frozen-clock determinism, cold-start rollback to design priors, exploration reproducibility, retrieval containment) and six controlled experiments on a synthetic replica of Cali, Colombia — ranking correctness, divergence from distance-only baselines, cold start, density modulation, catalog-size invariance, multi-seed robustness and signal ablation — whose reproducible pipeline lives in the companion research repository.
+
+## AI-assisted development disclosure
+
+Portions of this codebase were developed with the assistance of Claude (Fable 5, Anthropic) used as a coding assistant under the direction, review and verification of the human author. The model design, formalization, and validation decisions are the author's. Commits produced with assistance carry a `Co-Authored-By: Claude Fable 5` trailer. In line with current authorship guidance (COPE and publisher policies), AI tools are not credited as authors; their use is disclosed here and in any derived publication.
 
 ## License
 

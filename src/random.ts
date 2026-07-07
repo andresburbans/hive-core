@@ -28,6 +28,17 @@ export function mulberry32(seed: number): () => number {
     };
 }
 
+/**
+ * Canonical RNG for Thompson exploration: seeded by (candidate, UTC day).
+ * Derive the day from the SAME frozen clock used for scoring
+ * (`SituatedQuery.nowMs`) and exploratory rankings become reproducible;
+ * with the wall clock the ranking rotates daily but never within a day.
+ */
+export function explorationRng(candidateId: string, nowMs: number = Date.now()): () => number {
+    const day = Math.floor(nowMs / 86_400_000);
+    return mulberry32(hashSeed(`${candidateId}:${day}`));
+}
+
 /** Standard normal via Box-Muller (consumes 2 uniforms). */
 function sampleNormal(rand: () => number): number {
     let u = 0;

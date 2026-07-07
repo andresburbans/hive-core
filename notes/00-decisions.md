@@ -46,13 +46,30 @@ Añadidos en la misma pasada: `.github/workflows/ci.yml` (Node 20/22: typecheck+
 - [ ] Nombre legal para LICENSE y autoría del artículo.
 - [ ] Coautoría de la directora de tesis (recomendado sí).
 - [ ] Revista objetivo primer intento (recomendado: ISPRS IJGI).
-- [ ] Crear repo GitHub público `andresburbans/hive-core` y publicar (cuando el usuario lo apruebe).
+- [x] Crear repo GitHub público `andresburbans/hive-core` y publicar. (hecho 2026-07-07; npm publish pendiente de login)
 - [ ] Presupuesto APC / preferencia por revista sin costo.
 - [ ] Fuente de datos reales para el experimento adicional (opciones en `03-experiments-plan.md`).
 
 ## Pendientes técnicos (míos)
 
-- [ ] CI (GitHub Actions: typecheck + test) al crear el repo.
-- [ ] Ejemplo ejecutable `examples/` que reproduzca el pipeline sintético.
-- [ ] Versión etiquetada v0.1.0 + DOI Zenodo al publicar el repo.
+- [x] CI (GitHub Actions: typecheck + test) al crear el repo. (verde en Actions, 2026-07-07)
+- [x] Ejemplo ejecutable `examples/` que reproduzca el pipeline sintético. (quickstart.ts)
+- [~] Versión etiquetada v0.1.0 subida; DOI Zenodo pendiente (conectar Zenodo → crear Release).
 - [ ] Puerto/verificación de paridad numérica con `python_resultados/` (mismo escenario, mismos números).
+
+## 2026-07-07 (noche) — Publicación + re-revisión GLM-5.2
+
+**Publicado**: repo público `github.com/andresburbans/hive-core` (main + tag v0.1.0, CI verde en Actions). `hive-core` estaba OCUPADO en npm (hive.js) → el paquete es **`@andresburbans/hive-core`** (`publishConfig.access: public`; README e imports actualizados). El repo de GitHub conserva el nombre corto. `npm publish` pendiente solo de `npm login` del usuario. Zenodo: conectar ANTES de crear el GitHub Release de v0.1.0 (archiva al publicar release, no al pushear tag). El usuario retiró `article/` del repo público antes del sometimiento (commit db4d568) — los borradores viven solo en local.
+
+**Re-revisión GLM-5.2**: 10/10 propuestas confirmadas. De las 5 observaciones residuales:
+1. ~~`ScoreResult.modelVersion` no declarado~~ — **falso positivo**: la interfaz lo declara (scoring.ts:74-75) desde la pasada anterior.
+2. **Test P4 añadido** (cold-start full rollback): candidato sin evidencia alguna (conteos cero, sin bandas, sin actividad, sin texto) → pasa gate, score finito, E[R] = 24/7 exacto (prior Dir(1,1,1,2,2)).
+3. **`explorationRng(candidateId, nowMs)`** exportado desde `random.ts`: RNG canónico (día UTC derivado del reloj congelado, no de Date.now()) — cierra el determinismo de la fase exploratoria; test de reproducibilidad añadido; JSDoc de `explorationScore` documenta la convención.
+4. **REVERSE_KERNEL** anotado en `01-formalization.md` §2.3: citar en A1 como parámetro propio de la dirección reversa, no como «2× del forward».
+5. tsconfig incluye `examples/` en el typecheck — correcto hoy; **backlog**: tsconfig separado si examples/ crece con material experimental pesado.
+
+**Empaquetado/uso**: `sideEffects: false` (tree-shaking), `engines.node >= 20` (coherente con la matriz CI), `homepage`/`bugs` en package.json.
+
+**Crédito de IA**: sección "AI-assisted development disclosure" en README — Claude (Fable 5, Anthropic) como asistente de código bajo dirección/revisión del autor humano; trailers `Co-Authored-By` en commits; la IA no figura como autor (COPE/políticas editoriales); replicar la declaración en A1 al someter.
+
+**Backlog no crítico** (de la re-revisión): E0 paridad numérica hive-core ↔ `python_resultados/` con fixture compartido; TypeDoc → GitHub Pages; tsconfig de examples; REST demo opcional v0.2.

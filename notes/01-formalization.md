@@ -55,6 +55,7 @@ $f_{rep} = E[R_p]/5$ y $f_{disp} = \min(\mathrm{Var}[R_p]/2, 1)$: nivel y riesgo
 - **Texto**: BM25-lite con IDF local al conjunto de candidatos de la consulta (sin índice global): los términos que todos comparten se auto-anulan.
 - **Economía**: banda de tres niveles $\{m, a, s\}$ (mínimo, aceptable, deseado); $f_{eco}(B)$ continua, monótona, con zona de negociación lineal $[m, a)$, zona de satisfacción $[a, s)$ y saturación en $s$. Sin banda en la unidad pedida: incertidumbre explícita (0.65), no neutralidad perfecta.
 - **Actividad/frescura**: decaimiento exponencial con semividas de diseño.
+- **Dirección reversa**: la fricción espacial del flujo capacidad→necesidades usa su propio kernel de diseño `REVERSE_KERNEL` (α=5 km, β=2, en `config.ts`). Al redactar A1 debe citarse como parámetro propio de la dirección reversa — quien viaja es el actor ordenado y tolera más distancia — y NO como «2× del kernel forward»: la coincidencia numérica α_rev = 2·α_fwd es una elección de diseño, no una ligadura del modelo.
 
 ### 2.4 Capa dinámica
 

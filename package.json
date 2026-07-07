@@ -8,6 +8,14 @@
   "license": "MIT",
   "author": "Andres Burbano (andresburbans)",
   "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "homepage": "https://github.com/andresburbans/hive-core#readme",
+  "bugs": {
+    "url": "https://github.com/andresburbans/hive-core/issues"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
