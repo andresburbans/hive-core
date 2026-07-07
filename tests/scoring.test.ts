@@ -87,7 +87,7 @@ describe("multi-signal ranking correctness (seeded dominant candidate)", () => {
             .map((c) => ({ id: c.id, r: scoreCandidate(c, q, ALPHA) }))
             .filter((x) => x.r.passedGate)
             .sort((a, b) => b.r.score - a.r.score);
-        expect(ranked[0].id).toBe("dominant");
+        expect(ranked[0]!.id).toBe("dominant");
     });
 
     it("degrading a single signal demotes predictably (price out of band)", () => {
@@ -116,6 +116,34 @@ describe("multi-signal ranking correctness (seeded dominant candidate)", () => {
         expect(gapUrgent).toBeGreaterThan(gapNormal);
     });
 
+    it("P2: coverage gates but never scores — ∂S/∂ρ = 0 inside the gate", () => {
+        // Same candidate, three declared radii that all contain the seeker
+        // (≈0.4 km away): identical score. Over-declaring coverage buys nothing.
+        const q = makeQuery({ flow: "request", budget: 100, unit: "activity", nowMs: 1700000000000 });
+        const scores = [5, 50, 1000].map((km) =>
+            scoreCandidate(makeCandidate({ coverageRadiusKm: km }), q, ALPHA)
+        );
+        expect(scores[0]!.passedGate).toBe(true);
+        expect(scores[1]!.score).toBe(scores[0]!.score);
+        expect(scores[2]!.score).toBe(scores[0]!.score);
+        // The slack differs only in the LTR feature vector (reserved, weight 0).
+        expect(scores[1]!.featureVector[11]).not.toBe(scores[0]!.featureVector[11]);
+    });
+
+    it("is fully deterministic under a frozen evaluation clock", () => {
+        const q = makeQuery({
+            flow: "request", budget: 100, unit: "activity", nowMs: 1700000000000,
+        });
+        const c = makeCandidate({
+            lastActiveMs: 1700000000000 - 24 * 3.6e6,
+            createdMs: 1700000000000 - 30 * 24 * 3.6e6,
+        });
+        const a = scoreCandidate(c, q, ALPHA);
+        const b = scoreCandidate(c, q, ALPHA);
+        expect(b).toEqual(a);
+        expect(a.modelVersion).toBeTruthy();
+    });
+
     it("emits the 14-component LTR feature vector for every scored candidate", () => {
         const r = scoreCandidate(makeCandidate(), makeQuery(), ALPHA);
         expect(r.featureVector).toHaveLength(14);
@@ -126,17 +154,18 @@ describe("multi-signal ranking correctness (seeded dominant candidate)", () => {
         const q = makeQuery({ flow: "request", budget: 100, unit: "activity" });
         const r = scoreCandidate(makeCandidate(), q, ALPHA);
         const w = WEIGHTS.request;
+        const cmp = r.components;
         const rebuilt =
-            w.distance * r.components.f_dist +
-            w.expectedRating * r.components.f_eR -
-            w.varPenalty * r.components.f_pen +
-            w.text * r.components.f_text +
-            w.topicMatch * r.components.f_topic +
-            w.activity * r.components.f_act +
-            w.recency * r.components.f_rec +
-            w.price * r.components.f_price +
-            w.engagement * r.components.f_eng * r.components.coldStart +
-            w.traits * r.components.f_trait;
+            w.distance * cmp.f_dist! +
+            w.expectedRating * cmp.f_eR! -
+            w.varPenalty * cmp.f_pen! +
+            w.text * cmp.f_text! +
+            w.topicMatch * cmp.f_topic! +
+            w.activity * cmp.f_act! +
+            w.recency * cmp.f_rec! +
+            w.price * cmp.f_price! +
+            w.engagement * cmp.f_eng! * cmp.coldStart! +
+            w.traits * cmp.f_trait!;
         expect(rebuilt).toBeCloseTo(r.score, 10);
     });
 });

@@ -17,7 +17,29 @@ Ruta elegida: **A** (A1 modelo formal → A3 JOSS → A2 pirámide H3 → A4 gen
    - `isNationalCoverage` → `isUnlimitedCoverage` (umbral 1000 km en config).
    - `hexMetric` parametriza la resolución de búsqueda (default 8) con `kmPerCell(res)` dinámico vía h3-js.
 7. **Todo lo demás portado 1:1** (pesos, umbrales, formas funcionales, fixes de auditoría H1–H10). La matemática NO se tocó.
-8. **Pruebas**: 56 pruebas de propiedad pasando (decay, dirichlet, kernel-recovery, price, gate/scoring/ablación de score reconstruible, retrieval). La prueba de recuperación del kernel replica el experimento de la Figura 15 de la tesis.
+8. **Pruebas**: 58 pruebas de propiedad pasando (decay, dirichlet, kernel-recovery, price, gate/scoring/ablación de score reconstruible, retrieval, P2 no-manipulabilidad, determinismo con reloj congelado). La prueba de recuperación del kernel replica el experimento de la Figura 15 de la tesis. La librería son 14 módulos funcionales + barril (`index.ts`).
+
+## 2026-07-07 — Revisión externa (GLM-5.2) aplicada
+
+Los 10 hallazgos, resueltos:
+1. **Pureza**: `SituatedQuery.nowMs` añadido; `scoreCandidate` ya no llama `Date.now()` cuando el llamador congela el reloj (f_act, f_rec y tieBreak usan el mismo `now`). Prueba de determinismo añadida.
+2. **P2 con prueba**: test "coverage gates but never scores" — radios 5/50/1000 km (todos dentro del gate) → score idéntico; solo difiere el slack en el vector LTR (peso 0).
+3. **MODEL_VERSION** alineado a `0.1.0` (lockstep con package.json), documentado como el campo `v` de la telemetría y estampado en cada `ScoreResult.modelVersion`.
+4. **Conteos corregidos**: 14 módulos + barril; 58 pruebas (README y esta bitácora).
+5. **REVERSE_KERNEL** extraído a config con justificación (el actor ordenado es quien viaja; el gate `maxDistanceKm` acota, no el decaimiento).
+6. **Precondición de la métrica hexagonal** documentada (celdas a res de búsqueda o más finas; más gruesas → fallback Haversine) en `hexMetric.ts`, `contracts.ts` y README.
+7. **LICENSE/package.json** en ASCII ("Andres Burbano") — evita mojibake en lectores no-UTF8; nombre legal sigue pendiente.
+8. **Colisión de barril** eliminada: `contracts.ts` ya no reexporta `PriceBand`/`PricingByUnit` (única fuente: `price.ts`).
+9. **noUncheckedIndexedAccess: true** activado; accesos de bucle sobre tuplas de longitud fija con aserción explícita.
+10. **README Install** marcado pre-release (clone + test + build); `npm install` queda para cuando se publique.
+
+Añadidos en la misma pasada: `.github/workflows/ci.yml` (Node 20/22: typecheck+test+build), `CITATION.cff` (TODO nombre/ORCID), `examples/quickstart.ts` ejecutable con `npx tsx` (verificado: el más cercano fuera de presupuesto cede el 1.er lugar — el caso de la Fig 20 de la tesis en miniatura).
+
+## Plan de publicación (GitHub + "servir como API")
+
+**GitHub** (cuando el usuario apruebe): crear repo público `andresburbans/hive-core` → `git remote add origin ... && git push -u origin main` → Actions corre CI → tag `v0.1.0` → conectar Zenodo (webhook de releases) → DOI en README/CITATION → `npm publish` (verificar nombre libre; si está tomado: `@andresburbans/hive-core`).
+
+**"API" para revisores**: lo que exigen JOSS/revistas es la **API programática documentada** (no un servicio web): referencia generada con TypeDoc → GitHub Pages, ejemplos ejecutables, pruebas en CI y statement of need. Un endpoint REST de demostración es OPCIONAL (nice-to-have para el artículo): envoltorio mínimo (`examples/server.ts` con Hono/Express o una Cloud Function) que exponga `POST /rank` recibiendo `{query, candidates}` y devolviendo el orden — la librería es pura, así que el wrapper son ~40 líneas. Decidir si se incluye en v0.2.
 
 ## Pendientes que decide el usuario
 

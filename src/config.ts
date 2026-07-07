@@ -105,6 +105,15 @@ export const REVERSE_WEIGHTS = {
 /** Recency half-life in the reverse direction: an open need expires fast as an opportunity. */
 export const REVERSE_RECENCY_HALFLIFE_H = { urgent: 12, scheduled: 72 } as const;
 
+/**
+ * Spatial decay of the reverse direction. The feed tolerates roughly twice the
+ * forward decay scale because the ranked actor is the one who travels: a
+ * provider deciding whether a need is worth responding to discounts distance
+ * less steeply than a seeker choosing who comes to them (the provider's
+ * `maxDistanceKm` gate, not the decay, bounds the reach).
+ */
+export const REVERSE_KERNEL = { alphaKm: 5, beta: 2 } as const;
+
 /** Offer-ranking weights (seeker→incoming offers on a broadcast need). */
 export const OFFER_WEIGHTS = {
     price: 0.50,
@@ -192,4 +201,10 @@ export function isUnlimitedCoverage(km: number): boolean {
     return km >= UNLIMITED_COVERAGE_KM;
 }
 
-export const MODEL_VERSION = "hive-1/lib-0.1";
+/**
+ * Version tag stamped on every ScoreResult and meant to travel as the `v`
+ * field of interaction telemetry tuples e = (u, q, Φ, r, a, v), so recorded
+ * preferences can always be attributed to the exact model that produced the
+ * ordering. Kept in lockstep with the package version.
+ */
+export const MODEL_VERSION = "0.1.0";

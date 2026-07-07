@@ -42,8 +42,12 @@ function asSearchRes(cell: string, res: number): string | null {
 
 /**
  * Hexagonal distance between two cells, in nominal km (cells × spacing).
- * Returns null if either cell is invalid or `gridDistance` fails — the caller
- * falls back to centroid Haversine.
+ *
+ * PRECONDITION: both cells must be at the search resolution or FINER (finer
+ * cells are lifted to their parent). A cell coarser than the search resolution
+ * cannot be refined safely, so this returns null and the caller falls back to
+ * centroid Haversine — the native metric never activates for such deployments.
+ * Also returns null if either cell is invalid or `gridDistance` fails.
  */
 export function hexDistanceKm(
     cellA: string | undefined,

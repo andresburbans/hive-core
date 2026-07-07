@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "hive-core: A geography-first retrieval engine on discrete hexagonal grids"
+type: software
+authors:
+  - family-names: "Burbano"
+    given-names: "Andres"
+    # TODO: confirm full legal name and add ORCID before public release
+version: 0.1.0
+date-released: 2026-07-07
+license: MIT
+repository-code: "https://github.com/andresburbans/hive-core"
+keywords:
+  - geospatial retrieval
+  - spatial matching
+  - H3
+  - discrete global grid systems
+  - location privacy
+  - Bayesian reputation

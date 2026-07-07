@@ -16,9 +16,7 @@ import type { EngagementCounters } from "./engagement";
 import type { WeightProfile } from "./config";
 import type { TextDoc, TextQuery } from "./text";
 import type { MobilityKernel } from "./kernel";
-import type { PriceBand, PricingByUnit } from "./price";
-
-export type { PriceBand, PricingByUnit };
+import type { PricingByUnit } from "./price";
 
 /**
  * A situated need: what the seeker asks, from where, in what context.
@@ -30,8 +28,18 @@ export interface SituatedQuery {
     /** Coarse domain of the focus. */
     focusDomainId: string;
     center: { lat: number; lng: number };
-    /** H3 cell of the center at search resolution: enables the native hexagonal metric. */
+    /**
+     * H3 cell of the center: enables the native hexagonal metric. Must be at
+     * the search resolution OR FINER (finer cells are lifted to their parent);
+     * a coarser cell cannot be refined and the metric falls back to Haversine.
+     */
     centerCell?: string;
+    /**
+     * Evaluation clock (epoch ms). Freezing it makes `scoreCandidate` fully
+     * deterministic — same inputs, same result — which experiments and replays
+     * require. Defaults to `Date.now()`.
+     */
+    nowMs?: number;
     /**
      * Discovery mode: without a thematic focus the gate only requires coverage
      * and the ranking is decided by distance + reputation + text. Covers the
@@ -59,7 +67,7 @@ export interface SituatedCandidate {
     entityId?: string;
     lat: number;
     lng: number;
-    /** H3 cell at search resolution (hexagonal metric). */
+    /** H3 cell at search resolution or finer (see `SituatedQuery.centerCell`). */
     cell?: string;
     domainId: string;
     topicId: string;

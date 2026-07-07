@@ -22,7 +22,7 @@ export function expectedRating(n: Counts5, a: Alpha5): number {
     const denom = N + a0;
     if (denom <= 0) return 0;
     let s = 0;
-    for (let i = 0; i < 5; i++) s += (LEVELS[i] * (n[i] + a[i])) / denom;
+    for (let i = 0; i < 5; i++) s += (LEVELS[i]! * (n[i]! + a[i]!)) / denom;
     return s;
 }
 
@@ -35,13 +35,13 @@ export function ratingVariance(n: Counts5, a: Alpha5): number {
     let er = 0;
     const p = new Array<number>(5);
     for (let i = 0; i < 5; i++) {
-        p[i] = (n[i] + a[i]) / denom;
-        er += LEVELS[i] * p[i];
+        p[i] = (n[i]! + a[i]!) / denom;
+        er += LEVELS[i]! * p[i]!;
     }
     let v = 0;
     for (let i = 0; i < 5; i++) {
-        const diff = LEVELS[i] - er;
-        v += diff * diff * p[i];
+        const diff = LEVELS[i]! - er;
+        v += diff * diff * p[i]!;
     }
     return v;
 }
@@ -84,7 +84,7 @@ export function deriveCountsFromLegacy(
         out[lo - 1] = total - nHi;
         out[hi - 1] = nHi;
     }
-    return [out[0], out[1], out[2], out[3], out[4]];
+    return [out[0]!, out[1]!, out[2]!, out[3]!, out[4]!];
 }
 
 /**
@@ -97,12 +97,12 @@ export function sampleExpectedRating(n: Counts5, a: Alpha5, rand: () => number):
     const g = new Array<number>(5);
     let sum = 0;
     for (let i = 0; i < 5; i++) {
-        g[i] = sampleGamma(Math.max(1e-3, n[i] + a[i]), rand);
-        sum += g[i];
+        g[i] = sampleGamma(Math.max(1e-3, n[i]! + a[i]!), rand);
+        sum += g[i]!;
     }
     if (sum <= 0) return expectedRating(n, a);
     let r = 0;
-    for (let i = 0; i < 5; i++) r += LEVELS[i] * (g[i] / sum);
+    for (let i = 0; i < 5; i++) r += LEVELS[i]! * (g[i]! / sum);
     return r;
 }
 
@@ -133,21 +133,21 @@ export function estimatePriorMoM(
     });
 
     const pbar = [0, 0, 0, 0, 0];
-    for (const p of ps) for (let i = 0; i < 5; i++) pbar[i] += p[i];
-    for (let i = 0; i < 5; i++) pbar[i] /= ps.length;
+    for (const p of ps) for (let i = 0; i < 5; i++) pbar[i] = pbar[i]! + p[i]!;
+    for (let i = 0; i < 5; i++) pbar[i] = pbar[i]! / ps.length;
 
     const s2 = [0, 0, 0, 0, 0];
     for (const p of ps) for (let i = 0; i < 5; i++) {
-        const d = p[i] - pbar[i];
-        s2[i] += d * d;
+        const d = p[i]! - pbar[i]!;
+        s2[i] = s2[i]! + d * d;
     }
-    for (let i = 0; i < 5; i++) s2[i] /= Math.max(1, ps.length - 1);
+    for (let i = 0; i < 5; i++) s2[i] = s2[i]! / Math.max(1, ps.length - 1);
 
     let acc = 0;
     let cnt = 0;
     for (let i = 0; i < 5; i++) {
-        if (s2[i] <= 1e-9) continue;
-        const a0i = (pbar[i] * (1 - pbar[i])) / s2[i] - 1;
+        if (s2[i]! <= 1e-9) continue;
+        const a0i = (pbar[i]! * (1 - pbar[i]!)) / s2[i]! - 1;
         if (a0i > 0 && Number.isFinite(a0i)) {
             acc += a0i;
             cnt += 1;
@@ -158,11 +158,11 @@ export function estimatePriorMoM(
     if (!(a0 > 0) || !Number.isFinite(a0)) return null;
 
     const alpha: Alpha5 = [
-        Math.max(1e-3, a0 * pbar[0]),
-        Math.max(1e-3, a0 * pbar[1]),
-        Math.max(1e-3, a0 * pbar[2]),
-        Math.max(1e-3, a0 * pbar[3]),
-        Math.max(1e-3, a0 * pbar[4]),
+        Math.max(1e-3, a0 * pbar[0]!),
+        Math.max(1e-3, a0 * pbar[1]!),
+        Math.max(1e-3, a0 * pbar[2]!),
+        Math.max(1e-3, a0 * pbar[3]!),
+        Math.max(1e-3, a0 * pbar[4]!),
     ];
     return { alpha, totalSamples: total };
 }

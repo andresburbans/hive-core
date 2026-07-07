@@ -25,6 +25,8 @@ import {
     ENGAGEMENT_SMOOTHING,
     REPUTATION_MATURITY_N,
     DENSITY,
+    REVERSE_KERNEL,
+    MODEL_VERSION,
     isUnlimitedCoverage,
     type Alpha5,
     type WeightProfile,
@@ -69,6 +71,8 @@ export interface ScoreResult {
     components: Record<string, number>;
     /** LTR vector x_p ∈ ℝ¹⁴ (for interaction telemetry when it lands). */
     featureVector: number[];
+    /** Model version that produced this ordering (the `v` of telemetry tuples). */
+    modelVersion: string;
 }
 
 const FAIL: Omit<ScoreResult, "distanceKm" | "expectedRating" | "variance" | "consistency" | "textScore" | "tieBreak"> = {
@@ -76,6 +80,7 @@ const FAIL: Omit<ScoreResult, "distanceKm" | "expectedRating" | "variance" | "co
     score: -Infinity,
     components: {},
     featureVector: [],
+    modelVersion: MODEL_VERSION,
 };
 
 /** Model distance: native hexagonal if cells exist; Haversine otherwise. */
@@ -97,6 +102,7 @@ export function scoreCandidate(
     alpha: Alpha5,
     profile: WeightProfile = weightProfileFor(q)
 ): ScoreResult {
+    const now = q.nowMs ?? Date.now();
     const distanceKm = modelDistanceKm(q.centerCell, q.center, c.cell, c.lat, c.lng);
     const unlimited = isUnlimitedCoverage(c.coverageRadiusKm);
 
@@ -134,8 +140,8 @@ export function scoreCandidate(
     const f_topic = q.discovery
         ? topicMatch ? 1.0 : domainMatch ? 0.85 : 0.7
         : topicMatch ? 1.0 : domainMatch ? 0.6 + 0.4 * f_text : Math.max(0.4, f_text);
-    const f_act = c.lastActiveMs ? expDecay((Date.now() - c.lastActiveMs) / 3.6e6, ACTIVITY_HALFLIFE_H) : 0.5;
-    const f_rec = c.createdMs ? expDecay((Date.now() - c.createdMs) / 3.6e6, RECENCY_HALFLIFE_H) : 0.5;
+    const f_act = c.lastActiveMs ? expDecay((now - c.lastActiveMs) / 3.6e6, ACTIVITY_HALFLIFE_H) : 0.5;
+    const f_rec = c.createdMs ? expDecay((now - c.createdMs) / 3.6e6, RECENCY_HALFLIFE_H) : 0.5;
     const unit = resolveUnit(q, c.primaryUnit);
     const band = c.pricing?.[unit];
     const f_price = priceFit(q.budget, band);
@@ -170,10 +176,11 @@ export function scoreCandidate(
         variance: vR,
         consistency: cons,
         textScore: f_text,
-        tieBreak: rotationTieBreak(c.id),
+        tieBreak: rotationTieBreak(c.id, now),
         components: { f_dist, f_eR, f_pen, f_text, f_topic, f_act, f_rec, f_price, f_eng, f_trait, coldStart, rescued: rescued ? 1 : 0 },
         // x_p ∈ ℝ¹⁴
         featureVector: [f_dist, distanceKm, f_eR, vR, cons, f_text, f_topic, f_act, f_rec, f_price, unitMismatch, covSlack, supplyNorm, f_trait],
+        modelVersion: MODEL_VERSION,
     };
 }
 
@@ -256,7 +263,7 @@ export function scoreOpportunity(o: OpenNeed, ctx: ProviderContext): Opportunity
     if (distanceKm > ctx.maxDistanceKm) return OPP_FAIL;
 
     // ── Signals ──────────────────────────────────────────────────────────────
-    const f_dist = logLogistic(distanceKm, DEFAULT_KERNEL.alphaKm * 2, DEFAULT_KERNEL.beta); // the feed tolerates more km than browse
+    const f_dist = logLogistic(distanceKm, REVERSE_KERNEL.alphaKm, REVERSE_KERNEL.beta);
     const band = o.unit ? ctx.pricing?.[o.unit] : undefined;
     // Without pricing context the signal is constant (neutral across needs).
     const f_price = ctx.pricing && o.unit ? priceFit(o.budget, band) : 1;

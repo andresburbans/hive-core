@@ -60,15 +60,16 @@ export function fitMobilityKernel(samples: ReadonlyArray<KernelSample>): Mobilit
         // Gradient and Hessian of the log-likelihood.
         let g0 = 0, g1 = 0, h00 = 0, h01 = 0, h11 = 0;
         for (let i = 0; i < n; i++) {
-            const z = b0 + b1 * xs[i];
+            const x = xs[i]!;
+            const z = b0 + b1 * x;
             const p = 1 / (1 + Math.exp(-z));
-            const r = ys[i] - p;
+            const r = ys[i]! - p;
             const w = Math.max(1e-9, p * (1 - p));
             g0 += r;
-            g1 += r * xs[i];
+            g1 += r * x;
             h00 += w;
-            h01 += w * xs[i];
-            h11 += w * xs[i] * xs[i];
+            h01 += w * x;
+            h11 += w * x * x;
         }
         const det = h00 * h11 - h01 * h01;
         if (!Number.isFinite(det) || Math.abs(det) < 1e-12) return null;
