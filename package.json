@@ -1,6 +1,9 @@
 {
-  "name": "hive-core",
+  "name": "@andresburbans/hive-core",
   "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "HIVE (Hyper-local Intelligent Vicinity Engine): a geography-first retrieval and ranking model for matching situated needs to situated capabilities on discrete hexagonal grids, with first-class uncertainty.",
   "license": "MIT",
   "author": "Andres Burbano (andresburbans)",

@@ -19,7 +19,11 @@ Recommender systems treat location as one contextual feature that *adjusts* a ra
 
 ## Install
 
-> **Status:** pre-release. The package is not yet published to npm (name pending availability check). Until then, use it from source:
+```bash
+npm install @andresburbans/hive-core
+```
+
+Or from source:
 
 ```bash
 git clone https://github.com/andresburbans/hive-core.git
@@ -37,7 +41,7 @@ import {
   scoreCandidate, GLOBAL_FALLBACK_ALPHA,              // G + S
   buildTextDoc, buildTextQuery, computeLocalIdf,      // text channel
   type SituatedQuery, type SituatedCandidate,
-} from "hive-core";
+} from "@andresburbans/hive-core";
 
 // 1. The situated query (a need at a position).
 const query: SituatedQuery = {
