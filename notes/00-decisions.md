@@ -73,3 +73,7 @@ Añadidos en la misma pasada: `.github/workflows/ci.yml` (Node 20/22: typecheck+
 **Crédito de IA**: sección "AI-assisted development disclosure" en README — Claude (Fable 5, Anthropic) como asistente de código bajo dirección/revisión del autor humano; trailers `Co-Authored-By` en commits; la IA no figura como autor (COPE/políticas editoriales); replicar la declaración en A1 al someter.
 
 **Backlog no crítico** (de la re-revisión): E0 paridad numérica hive-core ↔ `python_resultados/` con fixture compartido; TypeDoc → GitHub Pages; tsconfig de examples; REST demo opcional v0.2.
+
+## 2026-07-07 (noche 2) — Contrato de redacción + reescritura v0.3
+
+El usuario auditó la prosa de v0.2: correcta en contenido pero "ensamblada, no narrada" (tics de LLM: dos puntos, guiones largos, escritura tipo lista, párrafos sin continuidad). Se adoptó un contrato de estilo permanente en `notes/04-writing-style.md` (prosa continua, un párrafo = una idea, la última frase motiva el siguiente, sin "consists of:", sin em dash como inciso, transiciones por causalidad, referencia de calidad MDPI Q1). `articleA1.md` reescrito íntegro como v0.3 bajo ese contrato: capítulo por capítulo, prosa fluida, ecuaciones (1)-(13) y Tablas 1-5 intactas, captions de figuras movidos a bloque final estándar de manuscrito. Verificación automática: cero em dashes en prosa, cero patrones de lista, cero Furthermore/Moreover. TODA redacción futura de manuscritos en este workspace aplica 04-writing-style.md.
